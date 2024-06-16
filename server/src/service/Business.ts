@@ -1,12 +1,13 @@
 import { GraphQLResolveInfo } from "graphql";
-import { ReviewType } from "../types/types";
+// import { ArgsType } from "../types/Types.js";
+import { ArgsType, BusinessType, CategoryType, DatabaseType, ReviewType } from "../types/Types.js";
 
-export const reviews = (obj, arg, context, info: GraphQLResolveInfo) => {
-    const compare = (a,b) => {
+export const reviews = (obj: any, arg: ArgsType, context: {db: DatabaseType}, info: GraphQLResolveInfo) => {
+    const compare = (a: any, b:any) => {
         const [orderField, order] = arg.orderBy.split("_");
 
-        const left = a[orderField]
-        const right = b[orderField]
+        const left = a[orderField as keyof ReviewType]
+        const right = b[orderField as keyof ReviewType]
 
         if(left<right){
             return order === "asc" ? -1 : 1
@@ -18,15 +19,15 @@ export const reviews = (obj, arg, context, info: GraphQLResolveInfo) => {
             return 0;
         }
     }
-    return obj.reviewIds.map(v => {
+    return obj.reviewIds.map((v:string) => {
         return context.db.reviews.find((review: ReviewType) => {
             return review.reviewId === v;
         })
     }).sort(compare)
 }
 
-export const avgStars = (obj, arg, context, info: GraphQLResolveInfo) => {
-    const reviews = obj.reviewIds.map(v => {
+export const avgStars = (obj: any, arg: ArgsType, context: {db: DatabaseType}, info: GraphQLResolveInfo) => {
+    const reviews = obj.reviewIds.map((v: string) => {
         return context.db.reviews.find((review: ReviewType) => {
             return review.reviewId === v;
         })
@@ -39,7 +40,7 @@ export const avgStars = (obj, arg, context, info: GraphQLResolveInfo) => {
     return reviews.length === 0 ? 0 : totalStars / reviews.length;
 }
 
-export const categories = (obj, args, context, info) => {
+export const categories = (obj: BusinessType, args: any, context: {db: DatabaseType}, info: GraphQLResolveInfo) => {
     return context.db.categories.filter((category)=>{
         return obj.categories.includes(category.name)
     })

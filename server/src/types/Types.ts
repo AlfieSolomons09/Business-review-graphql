@@ -11,8 +11,8 @@ export type BusinessType = {
     address: string;
     avgStars: number;
     photos: PhotoType[];
-    reviews: ReviewType[];
-    categories: CategoryType[]
+    reviewIds: ReviewType[];
+    categories: string[]
 };
 
 export type PhotoType = {
@@ -32,5 +32,20 @@ export type ReviewType = {
 
 export type CategoryType = {
     name: string,
-    businesses: BusinessType[]
+    businesses?: BusinessType[]
+}
+
+export type DatabaseType = {
+    businesses: BusinessType[];
+    reviews: ReviewType[];
+    categories: CategoryType[];
+    users: UserType[];
+}
+
+export type ArgsType = {
+    id: string
+    search: string
+    first: number
+    offset: number
+    orderBy: string
 }
